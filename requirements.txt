@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+easyocr
+pillow
+jinja2
+rdkit
