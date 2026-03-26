@@ -12,6 +12,42 @@ GLOBAL_DB = {
 }
 
 st.title("🧪 AI-Powered Spectral Guardian")
+# --- UPDATED PROCESSING ENGINE ---
+if up:
+    img = Image.open(up)
+    width, height = img.size
+    st.image(img, use_container_width=True)
+    
+    if st.button("🚀 Run Precision Analysis"):
+        with st.spinner("AI Targeting Blue Integration Labels..."):
+            reader = easyocr.Reader(['en'])
+            # rotation_info catches the vertical blue labels
+            results = reader.readtext(np.array(img), rotation_info=[90, 270])
+            
+            final_peaks = []
+            
+            for (bbox, text, prob) in results:
+                # --- SPATIAL AI FILTER ---
+                # Find the vertical position (0.0 top to 1.0 bottom)
+                y_pos = (bbox[0][1] + bbox[2][1]) / 2 / height
+                
+                # IN YOUR GRAPH: 
+                # Axis (12, 11, 10) is at y_pos > 0.85
+                # Blue Labels are between y_pos 0.70 and 0.82
+                if 0.65 < y_pos < 0.85:
+                    # Clean text to find only the numerical readings
+                    clean = "".join(re.findall(r'[0-9.]+', text.replace("I","1").replace("l","1")))
+                    try:
+                        v = float(clean)
+                        # Ensure we don't accidentally catch the whole number axis labels
+                        if v.is_integer() and v > 5: continue 
+                        final_peaks.append(v)
+                    except: continue
+
+            # Remove duplicates
+            final_peaks = sorted(list(set(final_peaks)), reverse=True)
+            
+            # (Rest of your Table/Database matching logic goes here...)
 
 # --- AI LOGIC: MODE VERIFICATION ---
 up = st.file_uploader("Upload Graph", type=['png', 'jpg'])
